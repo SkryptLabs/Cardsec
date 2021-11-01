@@ -1,5 +1,5 @@
 <h1>Cardsec</h1>
-<h2>Security Assessment Tool for Cardano SPOs</h2>
+<h3>Security Assessment Tool for Cardano SPOs</h3>
 <br>
 <p>
   <h3> Prerequisites </h3>
