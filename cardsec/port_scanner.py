@@ -8,7 +8,7 @@ print_lock = threading.Lock()
 
 target = socket.gethostname()
 t_IP = socket.gethostbyname(target)
-print ('Starting scan on host: ', t_IP)
+#print ('Starting scan on host: ', t_IP)
 
 port_list=set()
 q = Queue()
@@ -29,13 +29,13 @@ def threader():
       port_list.add(portscan(worker))
       q.task_done()
 
-def scan_ports():
+def scan_ports(port_range):
    for x in range(100):
             t = threading.Thread(target = threader)
             t.daemon = True
             t.start()
 
-   for worker in range(1, 500):
+   for worker in range(1, port_range):
             q.put(worker)
 
    q.join()
