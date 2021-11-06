@@ -30,7 +30,7 @@ This pie chart represents data gathered and analysed from 2668 Cardano Mainnet R
 
 ## Getting Started
 
-Steps to analyse stake pool (mainnet/testent) yourself. The data was obtained through the Cardano GraphQL API which is available opensource [here](https://github.com/input-output-hk/cardano-graphql)
+Steps to analyse stake pool (mainnet/testent) data yourself. The data was obtained through the Cardano GraphQL API which is available opensource [here](https://github.com/input-output-hk/cardano-graphql)
 
 ### Steps To Reproduce
 
