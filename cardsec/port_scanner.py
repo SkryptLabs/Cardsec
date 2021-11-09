@@ -38,9 +38,6 @@ def scan_ports():
              discovered_ports.append(str(port))
           conx.close()
 
-          
-          
-
        except (ConnectionRefusedError, AttributeError, OSError):
           pass
 
