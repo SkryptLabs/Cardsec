@@ -70,51 +70,6 @@ def scan_ports():
       print("No ports were open!")
       print("\nHappy Secure Minting!")
 
-#VULNERABILITY DETECTION  
-   #  print("Scan these ports for vulnerability detection:")
-   #  print("*" * 60)
-   #  print("nmap -p{ports} -sV -sC -T4 -Pn -oA {ip} {ip}".format(ports=",".join(discovered_ports), ip=target))
-   #  print("*" * 60)
-   #  outfile = "nmap -p{ports} -sV -sC -Pn -T4 -oA {ip} {ip}".format(ports=",".join(discovered_ports), ip=target)
-   #  t3 = datetime.now()
-   #  total1 = t3 - t1
-
-#Nmap
-
-   #  def automate():
-   #     choice = '0'
-   #     while choice =='0':
-   #        print("Would you like to run a vulnerability scan or quit?")
-   #        print("-" * 60)
-   #        print("1 = Run suggested Nmap scan")
-   #        print("2 = Exit to terminal")
-   #        print("-" * 60)
-   #        choice = input("Option Selection: ")
-         #  if choice == "1":
-         #     try:
-         #        print(outfile)
-         #        os.mkdir(target)
-         #        os.chdir(target)
-         #        os.system(outfile)
-         #        convert = "xsltproc "+target+".xml -o "+target+".html"
-         #        os.system(convert)
-         #        t3 = datetime.now()
-         #        total1 = t3 - t1
-         #        print("-" * 60)
-         #        print("Combined scan completed in "+str(total1))
-         #        print("Press enter to quit...")
-         #        input()
-         #     except FileExistsError as e:
-         #        print(e)
-         #        exit()
-   #        if choice =="2":
-   #           print("\nHappy Secure Minting!")
-   #           sys.exit()
-   #        else:
-   #           print("Please make a valid selection")
-   #           automate()
-   #  automate()
-
 if __name__ == '__main__':
     try:
         scan_ports()
