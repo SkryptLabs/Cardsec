@@ -54,21 +54,17 @@ def load():
     typer.echo(num_colour("CPU usage: ",cpu_load))
     typer.echo(num_colour("RAM usage: ",ram_load))
     typer.echo(num_colour("Disk usage: ",disk_load[3])+'\n')
-
+    
 @app.command(short_help="Port scanner")
 def scan(all:bool = typer.Option(False, help="Exhaustive Full scan")):
     
-    if all:
-        port_range=64000
-    else:
-        port_range=6000
-    
-    typer.echo(f"Scanning {port_range} ports...")
+    typer.echo(f"        Cardsec - Port and Vulnerability Scanner          ")
+    typer.echo(f"                Developed By - SkryptLabs              ")
+    typer.echo(f"Scanning 65536 ports...")
 
-    port_list=scan_ports(port_range)
-    if port_list:
-        typer.secho("The following ports were found open:",fg=typer.colors.BRIGHT_MAGENTA)
-        for i in port_list:
-            typer.echo(i)
-        typer.secho("Note: Only keep 2 outgoing ports open. (SSH & Node port) \n",fg=typer.colors.WHITE)
-    else: typer.secho("No ports open!",fg=typer.colors.RED)
+    discovered_ports=scan_ports()
+   
+  
+if __name__ == "__main__":
+    app()
+
