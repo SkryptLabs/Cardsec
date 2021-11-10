@@ -50,6 +50,7 @@ def load():
 			print("Disk usage: ",disk_load[3])
 
 def scan():
+	print(colored("-------Port Scanner---------", "magenta"))
 	def submenu():
 					print("[1] Exhaustive Scan - 64000 ports")
 					print("[2] Light Scan - 6000 ports")
@@ -118,7 +119,6 @@ while option != 0:
 		print("")
 	elif option == 3:
 		print("")
-		print(colored("Port Scanner", "magenta"))
 		scan()
 		print("")
 	elif option == 4:
@@ -126,6 +126,7 @@ while option != 0:
 		print("Coming Soon....")
 		print("")
 	elif option == 5:
+		print("Happy Minting!")
 		exit()	
 	else:
 		print("Invalid option.")
