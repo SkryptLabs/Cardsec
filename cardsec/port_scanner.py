@@ -1,78 +1,47 @@
-import os
-import signal
-import time
 import socket
+import time
 import threading
-import sys
-import subprocess
+
 from queue import Queue
-from datetime import datetime
+socket.setdefaulttimeout(0.25)
+print_lock = threading.Lock()
 
-# Start Threader3000 with clear terminal
-subprocess.call('clear', shell=True)
+target = socket.gethostname()
+t_IP = socket.gethostbyname(target)
+#print ('Starting scan on host: ', t_IP)
 
-# Main Function
-def scan_ports():
-    socket.setdefaulttimeout(0.30)
-    print_lock = threading.Lock()
-    discovered_ports = []
+port_list=set()
+q = Queue()
 
+def portscan(port):
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   try:
+      con = s.connect((t_IP, port))
+      with print_lock:
+          port_list.add(port)
+      con.close()
+   except:
+      pass
 
-    time.sleep(1)
-    target = socket.gethostname()
-    t_ip = socket.gethostbyname(target)
-    print ('Starting scan on host: ', t_ip)
-    print("-" * 60)
-    print("Time started: "+ str(datetime.now()))
-    print("-" * 60)
-    t1 = datetime.now()
+def threader():
+   while True:
+      worker = q.get()
+      port_list.add(portscan(worker))
+      q.task_done()
 
-    def portscan(port):
+def scan_ports(port_range):
+   for x in range(100):
+            t = threading.Thread(target = threader)
+            t.daemon = True
+            t.start()
 
-       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-       
-       try:
-          conx = s.connect((t_ip, port))
-          with print_lock:
-             print("Port {} is open".format(port))
-             discovered_ports.append(str(port))
-          conx.close()
+   for worker in range(1, port_range):
+            q.put(worker)
 
-       except (ConnectionRefusedError, AttributeError, OSError):
-          pass
+   q.join()
+   port_list.discard(None)
+   if port_list:
+      return port_list
+   else: return False
 
-    def threader():
-       while True:
-          worker = q.get()
-          portscan(worker)
-          q.task_done()
-      
-    q = Queue()
-     
-    #startTime = time.time()
-     
-    for x in range(200):
-       t = threading.Thread(target = threader)
-       t.daemon = True
-       t.start()
-
-    for worker in range(1, 65536):
-       q.put(worker)
-
-    q.join()
-
-    t2 = datetime.now()
-    total = t2 - t1
-    if discovered_ports:
-      print("Port scan completed in "+str(total))
-      print("\nHappy Secure Minting!")
-    else:
-      print("No ports were open!")
-      print("\nHappy Secure Minting!")
-
-if __name__ == '__main__':
-    try:
-        scan_ports()
-    except KeyboardInterrupt:
-        print("\nHappy Secure Minting!")
-        quit()
+#print(scan_ports())
