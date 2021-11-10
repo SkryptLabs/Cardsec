@@ -1,70 +1,137 @@
-import typer
 import psutil
 import subprocess
 import distro
 from typing import Optional
+from typing import Optional
+from termcolor import colored
 from cardsec.port_scanner import scan_ports
 
-GOOD=50
-OK=75
 
-def num_colour(start:str,num:int):
-    start=typer.style(start,fg=typer.colors.BRIGHT_WHITE)
-    if num<=GOOD:
-        end=typer.style(str(num)+'%', fg=typer.colors.GREEN, bold=True)
-    elif num<=OK:
-        end=typer.style(str(num)+'%', fg=typer.colors.YELLOW, bold=True)
-    else: typer.style(str(num)+'%', fg=typer.colors.RED, bold=True)
+def banner():
+ print("                                                                      ")
+ print("                                                                      ")
+ print(colored("          █████╗  █████╗ ██████╗ ██████╗  ██████╗███████╗ █████╗         ", "white"))
+ print(colored("         ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════ ██╔════╝██╔══██╗        ", "white"))
+ print(colored("         ██║  ╚═╝███████║██████╔╝██║  ██║╚█████╗ █████╗  ██║  ╚═╝        ", "white"))
+ print(colored("         ██║  ██╗██╔══██║██╔══██╗██║  ██║ ╚═══██╗██╔══╝  ██║  ██╗        ", "white"))
+ print(colored("         ╚█████╔╝██║  ██║██║  ██║██████╔╝██████╔╝███████╗╚█████╔╝        ", "white"))
+ print(colored("          ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚════╝        ", "white"))
+ print("                                                                      ")
+ print(colored("                        Developed by: SkryptLabs                              ", "blue"))
+ print(colored("                         twitter.com/skryptlabs             				   ", "red"))
+ print("                                                                         ")
 
-    return start+end
+banner()
 
-app = typer.Typer()
-system = typer.Typer()
-app.add_typer(system, name="system",help="System Details")
-
-
-@app.callback()
-def callback():
-    """
-    System and Security Assesment Tool for SPOs
-    """
-
-@system.command("info",short_help="System Information")
 def info():
-    try:
-        node=subprocess.check_output(['cardano-node','version']).decode().split()[1]
-    except: node="Not found."
+			try:
+				node=subprocess.check_output(['cardano-node','version']).decode().split()[1]
+			except: node="Not found."
 
-    typer.secho("\n-------System Info---------",fg=typer.colors.MAGENTA,bold=True)
+			print(colored("-------System Info---------", "blue"))
 
-    typer.echo("Distro: "+distro.id()+' '+distro.version())
-    typer.echo("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
-    typer.echo("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
-    typer.echo("Cardano-Node: " +node)
+			print("Distro: "+distro.id()+' '+distro.version())
+			print("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
+			print("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
+			print(colored("Recommended RAM: 16GB", "cyan"))
+			print(colored("Recommended Disk: 50GB", "cyan"))
+			print("Cardano-Node: " + colored((node), "red"))
 
-@system.command("load",short_help="System Load")
 def load():
-    #cpu_load=(psutil.getloadavg()[2]/psutil.cpu_count())*100
-    cpu_load=psutil.cpu_percent()
-    ram_load=psutil.virtual_memory()[2]
-    disk_load=psutil.disk_usage('/')
-    
-    typer.secho("\n-------System Load---------",fg=typer.colors.MAGENTA,bold=True)
-    
-    typer.echo(num_colour("CPU usage: ",cpu_load))
-    typer.echo(num_colour("RAM usage: ",ram_load))
-    typer.echo(num_colour("Disk usage: ",disk_load[3])+'\n')
-    
-@app.command(short_help="Port scanner")
-def scan(all:bool = typer.Option(False, help="Exhaustive Full scan")):
-    
-    typer.echo(f"        Cardsec - Port and Vulnerability Scanner          ")
-    typer.echo(f"                Developed By - SkryptLabs              ")
-    typer.echo(f"Scanning 65536 ports...")
+			#cpu_load=(psutil.getloadavg()[2]/psutil.cpu_count())*100
+			cpu_load=psutil.cpu_percent()
+			ram_load=psutil.virtual_memory()[2]
+			disk_load=psutil.disk_usage('/')
+			
+			print(colored("-------System Load---------", "blue"))
+			
+			print("CPU usage: ",cpu_load)
+			print("RAM usage: ",ram_load)
+			print("Disk usage: ",disk_load[3])
 
-    discovered_ports=scan_ports()
-   
-  
-if __name__ == "__main__":
-    app()
+def scan():
+	def submenu():
+					print("[1] Exhaustive Scan - 64000 ports")
+					print("[2] Light Scan - 6000 ports")
+					print("[3] Exit to Main Menu")
+	submenu()
+	suboption = int(input(colored("Select your option: ", "yellow")))
 
+	while suboption != 0:
+		if suboption == 1:
+			port_range=65000
+			print("Scanning", 65000, "ports...")
+
+			port_list=scan_ports(port_range)
+			if port_list:
+				print(colored("The following ports were found open:", "magenta"))
+				for i in port_list:
+					print(i)
+				print(colored("Note: Only keep 2 outgoing ports open. (SSH & Node port)", "red"))
+				print("")
+			else: print(colored("No ports open!", "red"))
+		      
+		elif suboption == 2:
+				port_range=6000
+				print("Scanning", 6000, "ports...")
+
+				port_list=scan_ports(port_range)
+				if port_list:
+					print(colored("The following ports were found open:", "magenta"))
+					for i in port_list:
+						print(i)
+					print(colored("Note: Only keep 2 outgoing ports open. (SSH & Node port)", "red"))
+					print("")
+				else: print(colored("No ports open!", "red"))
+		elif suboption == 3:
+			print("")
+			banner()
+			option
+			break
+	
+		else:
+			print("Invalid Option!")	
+		
+		submenu()
+		suboption = int(input(colored("Select your option: ", "yellow")))	
+		
+
+
+def menu():
+		print("[1] System Info")
+		print("[2] System Load")
+		print("[3] Port Scanner")
+		print("[4] Vulnerability Scanner")
+		print("[5] Exit Cardsec")
+
+menu()
+option = int(input(colored("Select your option: ", "yellow")))
+
+while option != 0:
+	if option == 1:
+		print("")
+		info()
+		print("")	
+	elif option == 2:
+		print("")
+		load()
+		print("")
+	elif option == 3:
+		print("")
+		print(colored("Port Scanner", "magenta"))
+		scan()
+		print("")
+	elif option == 4:
+		print("")
+		print("Coming Soon....")
+		print("")
+	elif option == 5:
+		exit()	
+	else:
+		print("Invalid option.")
+	
+	menu()
+	option = int(input(colored("Select your option: ", "yellow")))
+
+if __name__ == '__main__':
+	banner()
