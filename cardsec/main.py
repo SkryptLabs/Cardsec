@@ -2,6 +2,7 @@ import typer
 import psutil
 import subprocess
 import distro
+from importlib.metadata import version
 from os import system
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
@@ -10,6 +11,7 @@ from cardsec.port_scanner import scan_ports
 GOOD=50
 OK=75
 
+VERSION = version('cardsec')
 
 def num_colour(start:str,num:int):
     start=typer.style(start,fg=typer.colors.BRIGHT_WHITE)
@@ -31,6 +33,7 @@ def banner():
 	print(colored("         ██║  ██╗██╔══██║██╔══██╗██║  ██║ ╚═══██╗██╔══╝  ██║  ██╗        ", "white"))
 	print(colored("         ╚█████╔╝██║  ██║██║  ██║██████╔╝██████╔╝███████╗╚█████╔╝        ", "white"))
 	print(colored("          ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚════╝        ", "white"))
+	print(f"                               version {VERSION}                     ")
 	print("                                                                      ")
 	print(colored("                        Developed by: SkryptLabs                              ", "blue"))
 	print(colored("                         twitter.com/skryptlabs             				   ", "red"))
@@ -94,9 +97,9 @@ def scan():
 			scanner(port_range)			
 		      
 		elif suboption == 2:
-				port_range=6000
-				print("Scanning", 6000, "ports...")
-				scanner(port_range)
+			port_range=64000
+			print(f"Scanning {port_range} ports...")
+			scanner(port_range)
 
 		elif suboption == 3:
 			break
