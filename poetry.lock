@@ -157,6 +157,14 @@ optional = false
 python-versions = "!=3.0,!=3.1,!=3.2,!=3.3,>=2.6"
 
 [[package]]
+name = "simple-term-menu"
+version = "1.4.1"
+description = "A Python package which creates simple interactive menus on the command line."
+category = "main"
+optional = false
+python-versions = "~=3.5"
+
+[[package]]
 name = "termcolor"
 version = "1.1.0"
 description = "ANSII Color formatting for output in terminal."
@@ -214,7 +222,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "b65ce96c0c9a3ce0c6aa6d75765582d6391d6ce6f1d8bbdc946961c5549b1525"
+content-hash = "0f8f346730f9f355548cdcf126c30fca1684354fd616e8c4e9e68fe116c1f4d3"
 
 [metadata.files]
 atomicwrites = [
@@ -298,6 +306,10 @@ pytest = [
 shellingham = [
     {file = "shellingham-1.4.0-py2.py3-none-any.whl", hash = "sha256:536b67a0697f2e4af32ab176c00a50ac2899c5a05e0d8e2dadac8e58888283f9"},
     {file = "shellingham-1.4.0.tar.gz", hash = "sha256:4855c2458d6904829bd34c299f11fdeed7cfefbf8a2c522e4caea6cd76b3171e"},
+]
+simple-term-menu = [
+    {file = "simple-term-menu-1.4.1.tar.gz", hash = "sha256:401e7efc6726e195b8e62bfcede51298dc0daf8c5f043a521c8828191b0b012e"},
+    {file = "simple_term_menu-1.4.1-py3-none-any.whl", hash = "sha256:35cfbf6e855c347938c2da27a619cf0e212bc72a48bb86e43fa462ec7d7bccec"},
 ]
 termcolor = [
     {file = "termcolor-1.1.0.tar.gz", hash = "sha256:1d6d69ce66211143803fbc56652b41d73b4a400a2891d7bf7a1cdf4c02de613b"},

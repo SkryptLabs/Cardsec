@@ -2,16 +2,20 @@ import typer
 import psutil
 import subprocess
 import distro
-from importlib.metadata import version
 from os import system
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
-
+from simple_term_menu import TerminalMenu
 
 GOOD=50
 OK=75
 
-VERSION = version('cardsec')
+try:
+	from importlib.metadata import version 
+	VERSION = version('cardsec')
+except: 
+	VERSION = "Not found."
+
 
 def num_colour(start:str,num:int):
     start=typer.style(start,fg=typer.colors.BRIGHT_WHITE)
@@ -80,69 +84,57 @@ def scanner(port_range):
 def scan():
 	print(colored("-------Port Scanner---------", "magenta"))
 	def submenu():
-		print("[1] Light Scan - 6000 ports")
-		print("[2] Exhaustive Scan - 64000 ports")
-		print("[3] Exit to Main Menu")
+		menu_options=["[1] Light Scan - 6000 ports", "[2] Exhaustive Scan - 64000 ports", "[3] Back"]
+		terminal_menu = TerminalMenu(menu_options, title="Scan")
+		return terminal_menu.show()
 
 	while 1:
 		print('')
-		submenu()
-		try:
-			suboption = int(input(colored("Select your option: ", "yellow")))
-		except: return
+		suboption = submenu()
+		
 
-		if suboption == 1:
+		if suboption == 0:
 			port_range=6000
 			print(f"Scanning {port_range} ports...")
 			scanner(port_range)			
 		      
-		elif suboption == 2:
+		elif suboption == 1:
 			port_range=64000
 			print(f"Scanning {port_range} ports...")
 			scanner(port_range)
 
-		elif suboption == 3:
-			break
-	
-		else:
-			print("Invalid Option!")		
+		elif suboption == 2:
+			break		
 		
 
 def menu():
-		print("[1] System Info")
-		print("[2] System Load")
-		print("[3] Port Scanner")
-		print("[4] Vulnerability Scanner")
-		print("[5] Exit Cardsec")
+	menu_options=["[1] System Info", "[2] System Load", "[3] Port Scanner", "[4] Vulnerability Scanner", "[5] Exit"]
+	terminal_menu = TerminalMenu(menu_options, title="Home")
+	return terminal_menu.show()
 
 
-def select(option):
+def select(option):	
 	print("")
-	if option == 1:
+	if option == 0:
 		info()	
-	elif option == 2:
+	elif option == 1:
 		load()
-	elif option == 3:
+	elif option == 2:
 		scan()
-	elif option == 4:
+	elif option == 3:
 		print("Coming Soon....")
-	elif option == 5:
+	elif option == 4:
+		system("clear")
 		print("Happy Minting!")
-		exit()	
-	else:
-		print("Invalid option.")
-	
-	print("")
+		exit()
+
 
 
 app=typer.Typer(invoke_without_command=True)
 system("clear")
 banner()
 while 1:
-	menu()
-	try:
-		option = int(input(colored("Select your option: ", "yellow")))
-	except: exit()
+	option = menu()
 	system("clear")
 	banner()
 	select(option)

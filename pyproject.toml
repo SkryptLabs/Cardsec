@@ -2,7 +2,7 @@
 name = "cardsec"
 version = "0.0.5"
 description = "System and Security Assesment Tool for Cardano SPOs."
-authors = ["Advait Joglekar <advaitjoglekar@yahoo.in>"]
+authors = ["Advait Joglekar <advaitjoglekar@yahoo.in>", "Adnan Khan <strangelet.lol@protonmail.ch>"]
 maintainers = ["Advait Joglekar <advaitjoglekar@yahoo.in>"]
 license = "MIT"
 readme = "README.md"
@@ -17,6 +17,7 @@ typer = {extras = ["all"], version = "^0.4.0"}
 psutil = "^5.8.0"
 distro = "^1.6.0"
 termcolor = "^1.1.0"
+simple-term-menu = "^1.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
