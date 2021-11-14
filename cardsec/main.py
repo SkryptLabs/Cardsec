@@ -1,4 +1,3 @@
-import typer
 import psutil
 import subprocess
 import distro
@@ -17,15 +16,14 @@ except:
 	VERSION = "Not found."
 
 
-def num_colour(start:str,num:int):
-    start=typer.style(start,fg=typer.colors.BRIGHT_WHITE)
+def num_colour(num:int):
     if num<=GOOD:
-        end=typer.style(str(num)+'%', fg=typer.colors.GREEN, bold=True)
+        end = colored(f"{num}%", "green")
     elif num<=OK:
-        end=typer.style(str(num)+'%', fg=typer.colors.YELLOW, bold=True)
-    else: typer.style(str(num)+'%', fg=typer.colors.RED, bold=True)
+        end = colored(f"{num}%", "yellow")
+    else: end = colored(f"{num}%", "red")
 
-    return start+end
+    return end
 
 
 def banner():
@@ -45,16 +43,17 @@ def banner():
 
 
 def info():
-    try:
-        node=subprocess.check_output(['cardano-node','version']).decode().split()[1]
-    except: node="Not found."
+	try:
+		node=subprocess.check_output(['cardano-node','version']).decode().split()[1]
+	except: node="Not found."
 
-    typer.secho("\n-------System Info---------",fg=typer.colors.MAGENTA,bold=True)
+	print(colored("\n-------System Info---------", "magenta"))
 
-    typer.echo("Distro: "+distro.id()+' '+distro.version())
-    typer.echo("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
-    typer.echo("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
-    typer.echo("Cardano-Node: " +node)
+	print("Distro: "+distro.id()+' '+distro.version())
+	print("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
+	print("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
+	print("Cardano-Node: " +node)
+	print()
 
 
 def load():
@@ -63,11 +62,11 @@ def load():
     ram_load=psutil.virtual_memory()[2]
     disk_load=psutil.disk_usage('/')
     
-    typer.secho("\n-------System Load---------",fg=typer.colors.MAGENTA,bold=True)
+    print(colored("\n-------System Load---------", "magenta"))
     
-    typer.echo(num_colour("CPU usage: ",cpu_load))
-    typer.echo(num_colour("RAM usage: ",ram_load))
-    typer.echo(num_colour("Disk usage: ",disk_load[3])+'\n')
+    print("CPU usage: ", num_colour(cpu_load))
+    print("RAM usage: ", num_colour(ram_load))
+    print("Disk usage: ", num_colour(disk_load[3])+'\n')
 
 
 def scanner(port_range):
@@ -82,7 +81,7 @@ def scanner(port_range):
 
 
 def scan():
-	print(colored("-------Port Scanner---------", "magenta"))
+
 	def submenu():
 		menu_options=["[1] Light Scan - 6000 ports", "[2] Exhaustive Scan - 64000 ports", "[3] Back"]
 		terminal_menu = TerminalMenu(menu_options, title="Scan")
@@ -94,18 +93,31 @@ def scan():
 		
 
 		if suboption == 0:
+			print(colored("-------Port Scanner---------", "magenta"))
 			port_range=6000
 			print(f"Scanning {port_range} ports...")
 			scanner(port_range)			
 		      
 		elif suboption == 1:
+			print(colored("-------Port Scanner---------", "magenta"))
 			port_range=64000
 			print(f"Scanning {port_range} ports...")
 			scanner(port_range)
 
 		elif suboption == 2:
+			system("clear")
+			banner()
 			break		
 		
+
+def soon():
+	print("Coming Soon....\n")
+
+def quit():
+	system("clear")
+	print("Happy Minting!")
+	exit()
+
 
 def menu():
 	menu_options=["[1] System Info", "[2] System Load", "[3] Port Scanner", "[4] Vulnerability Scanner", "[5] Exit"]
@@ -113,28 +125,20 @@ def menu():
 	return terminal_menu.show()
 
 
-def select(option):	
-	print("")
-	if option == 0:
-		info()	
-	elif option == 1:
-		load()
-	elif option == 2:
-		scan()
-	elif option == 3:
-		print("Coming Soon....")
-	elif option == 4:
-		system("clear")
-		print("Happy Minting!")
-		exit()
+def select(option):
+
+	menu_func = [info, load, scan, soon, quit]
+
+	print()
+	return menu_func[option]()
 
 
 
-app=typer.Typer(invoke_without_command=True)
-system("clear")
-banner()
-while 1:
-	option = menu()
+def main():
 	system("clear")
 	banner()
-	select(option)
+	while 1:
+		option = menu()
+		system("clear")
+		banner()
+		select(option)
