@@ -80,7 +80,7 @@ def nmapscan():
 	timestr = time.strftime("%Y%m%d-%H%M%S")
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
 	os.system("sudo apt-get install nmap -y  > /dev/null 2>&1")
-	if not path.exists("vulners.nse"):
+	if not os.path.exists("vulners.nse"):
 		os.system("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse  > /dev/null 2>&1")
 		os.system("sudo cp vulners.nse /usr/share/nmap/scripts/")
 	print(colored("Scanning in process. Please have patience.", "yellow"))
@@ -125,13 +125,13 @@ def scan():
 			scanner(port_range)
 
 		elif suboption == 2:
-			system("clear")
+			os.system("clear")
 			banner()
 			break		
 		
 
 def quit():
-	system("clear")
+	os.system("clear")
 	print("Happy Minting!")
 	exit()
 
@@ -152,7 +152,7 @@ def select(option):
 
 
 def main():
-	system("clear")
+	os.system("clear")
 	banner()
 	while 1:
 		option = menu()
