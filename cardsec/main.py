@@ -3,6 +3,7 @@ import subprocess
 import distro
 import time
 import socket
+import os
 from os import system, path
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
