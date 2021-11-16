@@ -156,6 +156,6 @@ def main():
 	banner()
 	while 1:
 		option = menu()
-		system("clear")
+		os.system("clear")
 		banner()
 		select(option)
