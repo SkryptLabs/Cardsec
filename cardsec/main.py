@@ -3,8 +3,7 @@ import subprocess
 import distro
 import time
 import socket
-import os
-from os import system, path
+from os import os, system, path
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu
@@ -85,7 +84,7 @@ def nmapscan():
 		os.system("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse  > /dev/null 2>&1")
 		os.system("sudo cp vulners.nse /usr/share/nmap/scripts/")
 	print(colored("Scanning in process. Please have patience.", "yellow"))
-	os.system("sudo nmap -O -Pn"+ " " + t_IP + " " + "-p 1-64000 --script=vulners.nse" + " " + "-sV -oN ./Reports/report_" + timestr +".txt")-
+	os.system("sudo nmap -O -Pn"+ " " + t_IP + " " + "-p 1-64000 --script=vulners.nse" + " " + "-sV -oN ./Reports/report_" + timestr +".txt")
 	print(colored("The scan report has been saved under Reports directory.", "green"))
 	print("")
 
