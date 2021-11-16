@@ -20,7 +20,7 @@
 
 ## About
 
-![stakePoolStats](https://raw.githubusercontent.com/SkryptLabs/Cardsec/main/stakePoolStats/img/stakepoolstats.png)
+![stakePoolStats](https://raw.githubusercontent.com/SkryptLabs/Cardsec/main/stakePoolStats/stakepool_stats.png)
 
 If you are unfamiliar with the Cardano network. There are two types of nodes in the Cardano environment: block-producing nodes and relay nodes. The relays allows direct communication with the block producing node. These nodes are run by stake pool operators on various hosting providers. 
 
