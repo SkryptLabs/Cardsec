@@ -1,7 +1,9 @@
 import psutil
 import subprocess
 import distro
-from os import system
+import time
+import socket
+from os import system, path
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu
@@ -68,6 +70,24 @@ def load():
     print("RAM usage: ", num_colour(ram_load))
     print("Disk usage: ", num_colour(disk_load[3])+'\n')
 
+		
+def nmapscan():
+	print(colored("-------Vulnerability Scanner---------", "magenta"))
+	print("")
+	
+	target = socket.gethostname()
+	t_IP = socket.gethostbyname(target)
+	timestr = time.strftime("%Y%m%d-%H%M%S")
+	print(colored("Installing vulnerability scanning scripts....", "yellow"))
+	os.system("sudo apt-get install nmap -y  > /dev/null 2>&1")
+	if not path.exists("vulners.nse"):
+		os.system("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse  > /dev/null 2>&1")
+		os.system("sudo cp vulners.nse /usr/share/nmap/scripts/")
+	print(colored("Scanning in process. Please have patience.", "yellow"))
+	os.system("sudo nmap -O -Pn"+ " " + t_IP + " " + "-p 1-64000 --script=vulners.nse" + " " + "-sV -oN ./Reports/report_" + timestr +".txt")-
+	print(colored("The scan report has been saved under Reports directory.", "green"))
+	print("")
+
 
 def scanner(port_range):
 	port_list=scan_ports(port_range)
@@ -110,9 +130,6 @@ def scan():
 			break		
 		
 
-def soon():
-	print("Coming Soon....\n")
-
 def quit():
 	system("clear")
 	print("Happy Minting!")
@@ -127,7 +144,7 @@ def menu():
 
 def select(option):
 
-	menu_func = [info, load, scan, soon, quit]
+	menu_func = [info, load, scan, nmapscan, quit]
 
 	print()
 	return menu_func[option]()
