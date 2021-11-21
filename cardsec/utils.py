@@ -1,8 +1,8 @@
 import xml.etree.ElementTree as treant
 from termcolor import colored
 
-def parser(filenmap):
-    tree = treant.parse(filenmap)
+def parser(f):
+    tree = treant.parse(f)
     root = tree.getroot()
 
     for child in root.findall('host'):
