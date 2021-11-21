@@ -93,7 +93,10 @@ def nmapscan():
 	os.system("sudo nmap -Pn"+ " " + t_IP + " " + "-p 64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
 	f = open("report.xml", "r")
 	output = parser(f)
-	print(output)
+	if output == None:
+		print("No Vulnerabilites Found")
+	else:
+		print(output)
 
 
 
