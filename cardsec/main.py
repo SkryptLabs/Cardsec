@@ -1,12 +1,15 @@
+import typer
 import psutil
+import socket
+import sys
+import os
 import subprocess
 import distro
-import time
-import socket
-import os
+from os import stat_result, system, path
 from termcolor import colored
-from cardsec.port_scanner import scan_ports
-from simple_term_menu import TerminalMenu
+from port_scanner import scan_ports
+from simple_term_menu import TerminalMenu, main
+from utils import parser
 
 GOOD=50
 OK=75
@@ -71,6 +74,7 @@ def load():
     print("Disk usage: ", num_colour(disk_load[3])+'\n')
 
 		
+		
 def nmapscan():
 	print(colored("-------Vulnerability Scanner---------", "magenta"))
 	print("")
@@ -80,13 +84,17 @@ def nmapscan():
 	timestr = time.strftime("%Y%m%d-%H%M%S")
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
 	os.system("sudo apt-get install nmap -y  > /dev/null 2>&1")
-	if not os.path.exists("vulners.nse"):
+	if not path.exists("vulners.nse"):
 		os.system("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse  > /dev/null 2>&1")
 		os.system("sudo cp vulners.nse /usr/share/nmap/scripts/")
-	print(colored("Scanning in process. Please have patience.", "yellow"))
-	os.system("sudo nmap -O -Pn"+ " " + t_IP + " " + "-p 1-64000 --script=vulners.nse" + " " + "-sV -oN ./Reports/report_" + timestr +".txt")
-	print(colored("The scan report has been saved under Reports directory.", "green"))
+		print("Installed Succesfully")
+	print(colored("Scanning in process, please have patience.", "yellow"))
 	print("")
+	os.system("sudo nmap -Pn"+ " " + t_IP + " " + "-p 64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
+	f = open("report.xml", "r")
+	output = parser(f)
+	print(output)
+
 
 
 def scanner(port_range):
