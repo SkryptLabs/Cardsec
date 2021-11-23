@@ -1,2 +1,4 @@
 tests
 dist
+vulners.nse
+report.xml

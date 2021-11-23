@@ -1,10 +1,12 @@
 import psutil
+import socket
+import os
 import subprocess
 import distro
-from os import system
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
-from simple_term_menu import TerminalMenu
+from simple_term_menu import TerminalMenu, main
+from cardsec.utils import parser
 
 GOOD=50
 OK=75
@@ -25,6 +27,8 @@ def num_colour(num:int):
 
     return end
 
+def run_cmd(cmd):
+	return subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
 
 def banner():
 	print("                                                                      ")
@@ -68,6 +72,32 @@ def load():
     print("RAM usage: ", num_colour(ram_load))
     print("Disk usage: ", num_colour(disk_load[3])+'\n')
 
+		
+		
+def nmapscan():
+	print(colored("-------Vulnerability Scanner---------", "magenta"))
+	print()
+	
+	target = socket.gethostname()
+	t_IP = socket.gethostbyname(target)
+	print(colored("Installing vulnerability scanning scripts....", "yellow"))
+	run_cmd("sudo apt-get install nmap -y")
+	if not os.path.exists("vulners.nse"):
+		run_cmd("wget https://nmap.org/nselib/vulners.nse -O vulners.nse")
+		run_cmd("sudo cp vulners.nse /usr/share/nmap/scripts/")
+		print("Installed Succesfully")
+	print(colored("Scanning in process, please have patience.", "yellow"))
+	print()
+	run_cmd("sudo nmap -Pn"+ " " + t_IP + " " + "-p 64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
+	f = open("report.xml", "r")
+	output = parser(f)
+	if output == None:
+		print("No Vulnerabilites Found")
+	else:
+		print(output)
+	print()
+
+
 
 def scanner(port_range):
 	port_list=scan_ports(port_range)
@@ -76,7 +106,7 @@ def scanner(port_range):
 		for i in port_list:
 			print(i)
 		print(colored("Note: Only keep 2 outgoing ports open. (SSH & Node port)", "red"))
-		print("")
+		print()
 	else: print(colored("No ports open!", "red"))
 
 
@@ -105,16 +135,13 @@ def scan():
 			scanner(port_range)
 
 		elif suboption == 2:
-			system("clear")
+			os.system("clear")
 			banner()
 			break		
 		
 
-def soon():
-	print("Coming Soon....\n")
-
 def quit():
-	system("clear")
+	os.system("clear")
 	print("Happy Minting!")
 	exit()
 
@@ -127,7 +154,7 @@ def menu():
 
 def select(option):
 
-	menu_func = [info, load, scan, soon, quit]
+	menu_func = [info, load, scan, nmapscan, quit]
 
 	print()
 	return menu_func[option]()
@@ -135,10 +162,10 @@ def select(option):
 
 
 def main():
-	system("clear")
+	os.system("clear")
 	banner()
 	while 1:
 		option = menu()
-		system("clear")
+		os.system("clear")
 		banner()
 		select(option)
