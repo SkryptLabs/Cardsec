@@ -1,11 +1,8 @@
 import psutil
 import socket
-import sys
 import os
 import subprocess
 import distro
-import time
-from os import stat_result, system, path
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu, main
@@ -30,6 +27,8 @@ def num_colour(num:int):
 
     return end
 
+def run_cmd(cmd):
+	return subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
 
 def banner():
 	print("                                                                      ")
@@ -77,26 +76,26 @@ def load():
 		
 def nmapscan():
 	print(colored("-------Vulnerability Scanner---------", "magenta"))
-	print("")
+	print()
 	
 	target = socket.gethostname()
 	t_IP = socket.gethostbyname(target)
-	timestr = time.strftime("%Y%m%d-%H%M%S")
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
-	os.system("sudo apt-get install nmap -y  > /dev/null 2>&1")
-	if not path.exists("vulners.nse"):
-		os.system("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse  > /dev/null 2>&1")
-		os.system("sudo cp vulners.nse /usr/share/nmap/scripts/")
+	run_cmd("sudo apt-get install nmap -y")
+	if not os.path.exists("vulners.nse"):
+		run_cmd("wget https://nmap.org/nselib/vulners.nse -O vulners.nse")
+		run_cmd("sudo cp vulners.nse /usr/share/nmap/scripts/")
 		print("Installed Succesfully")
 	print(colored("Scanning in process, please have patience.", "yellow"))
-	print("")
-	os.system("sudo nmap -Pn"+ " " + t_IP + " " + "-p 64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
+	print()
+	run_cmd("sudo nmap -Pn"+ " " + t_IP + " " + "-p 64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
 	f = open("report.xml", "r")
 	output = parser(f)
 	if output == None:
 		print("No Vulnerabilites Found")
 	else:
 		print(output)
+	print()
 
 
 
@@ -107,7 +106,7 @@ def scanner(port_range):
 		for i in port_list:
 			print(i)
 		print(colored("Note: Only keep 2 outgoing ports open. (SSH & Node port)", "red"))
-		print("")
+		print()
 	else: print(colored("No ports open!", "red"))
 
 
