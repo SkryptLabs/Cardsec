@@ -13,7 +13,7 @@
   <h3> Installation </h3>
 
 ```python
-   pip install cardsec
+  sudo pip install cardsec
 ```
 </p>
 <br>
