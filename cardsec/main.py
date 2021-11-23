@@ -1,15 +1,15 @@
-import typer
 import psutil
 import socket
 import sys
 import os
 import subprocess
 import distro
+import time
 from os import stat_result, system, path
 from termcolor import colored
-from port_scanner import scan_ports
+from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu, main
-from utils import parser
+from cardsec.utils import parser
 
 GOOD=50
 OK=75
