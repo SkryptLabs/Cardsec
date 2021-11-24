@@ -28,7 +28,7 @@ def num_colour(num:int):
     return end
 
 def run_cmd(cmd):
-	return subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+	return subprocess.run(cmd, shell= True, text = True, stdout= subprocess.PIPE)
 
 def banner():
 	print("                                                                      ")
@@ -83,7 +83,7 @@ def nmapscan():
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
 	run_cmd("sudo apt-get install nmap -y")
 	if not os.path.exists("vulners.nse"):
-		run_cmd("wget https://nmap.org/nselib/vulners.nse -O vulners.nse")
+		run_cmd("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse > /dev/null 2>&1")
 		run_cmd("sudo cp vulners.nse /usr/share/nmap/scripts/")
 		print("Installed Succesfully")
 	print(colored("Scanning in process, please have patience.", "yellow"))
@@ -169,3 +169,6 @@ def main():
 		os.system("clear")
 		banner()
 		select(option)
+
+if __name__ == "__main__":
+    main()

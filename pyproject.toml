@@ -6,7 +6,11 @@ authors = ["Advait Joglekar <advaitjoglekar@yahoo.in>", "Adnan Khan <strangelet.
 maintainers = ["Advait Joglekar <advaitjoglekar@yahoo.in>"]
 license = "MIT"
 readme = "README.md"
-keywords = ["cardsec","cardano"]
+
+homepage = "https://github.com/SkryptLabs/Cardsec"
+repository = "https://github.com/SkryptLabs/Cardsec"
+
+keywords = ["cardsec","cardano", "SPO"]
 
 [tool.poetry.scripts]
 cardsec = "cardsec.main:main"
