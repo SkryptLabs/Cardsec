@@ -88,7 +88,7 @@ def nmapscan():
 		print("Installed Succesfully")
 	print(colored("Scanning in process, please have patience.", "yellow"))
 	print()
-	run_cmd("sudo nmap -Pn"+ " " + t_IP + " " + "-p 64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
+	run_cmd("sudo nmap -Pn"+ " " + t_IP + " " + "-p 1-64000 --script=vulners.nse" + " " + "-sV -oX report.xml")
 	f = open("report.xml", "r")
 	output = parser(f)
 	if output == None:
