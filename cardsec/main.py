@@ -3,6 +3,7 @@ import socket
 import os
 import subprocess
 import distro
+import requests
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu, main
@@ -12,6 +13,7 @@ GOOD=50
 OK=75
 
 try:
+	LATEST = requests.get("https://pypi.org/pypi/cardsec/json").json()["info"]["version"]
 	from importlib.metadata import version 
 	VERSION = version('cardsec')
 except: 
@@ -39,7 +41,11 @@ def banner():
 	print(colored("         ██║  ██╗██╔══██║██╔══██╗██║  ██║ ╚═══██╗██╔══╝  ██║  ██╗        ", "white"))
 	print(colored("         ╚█████╔╝██║  ██║██║  ██║██████╔╝██████╔╝███████╗╚█████╔╝        ", "white"))
 	print(colored("          ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚════╝        ", "white"))
-	print(f"                               version {VERSION}                     ")
+	if LATEST != VERSION:
+		print(colored(f"                               version {VERSION}        ", "yellow"))
+		print(colored(f"     		        New update {LATEST} available", "red"))
+	else:
+		print(colored(f"                               version {VERSION}        ", "green"))
 	print("                                                                      ")
 	print(colored("                        Developed by: SkryptLabs                              ", "blue"))
 	print(colored("                         twitter.com/skryptlabs             				   ", "red"))
@@ -57,6 +63,11 @@ def info():
 	print("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
 	print("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
 	print("Cardano-Node: " +node)
+	latest=requests.get("https://api.github.com/repos/input-output-hk/cardano-node/releases/latest").json()["tag_name"]
+	if latest == node:
+		print(colored("Cardano-Node is up to date", "green"))
+	else:
+		print(colored(f"Cardano-Node {latest} update available ", "red"))
 	print()
 
 
@@ -92,7 +103,7 @@ def nmapscan():
 	f = open("report.xml", "r")
 	output = parser(f)
 	if output == None:
-		print("No Vulnerabilites Found")
+		print(colored("No Vulnerabilites Found", "green"))
 	else:
 		print(output)
 	print()
