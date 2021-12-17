@@ -17,3 +17,10 @@ def parser(f):
                         print (colored("Port Number:", "magenta") + current_port )
                         print (colored("cve detected:", "magenta") + output)
                         print("")
+
+conf = {
+    "network": "",
+    "relay": "",
+    "ip": "",
+    "port": ""
+}

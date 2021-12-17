@@ -8,7 +8,7 @@ import json
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu, main
-from cardsec.utils import parser
+from cardsec.utils import parser, conf
 
 GOOD=50
 OK=75
@@ -55,8 +55,6 @@ def banner():
 
 def setup():
 	print(colored("\n-------Setup---------\n", "magenta"))
-	with open("cardsec/conf.json", "r") as f:
-		conf = json.load(f)
 	print("Is this a relay node?")
 	menu1 = TerminalMenu(["[1] Yes", "[2] No"])
 	menu1_choice = menu1.show()
