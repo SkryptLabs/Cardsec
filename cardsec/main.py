@@ -4,6 +4,7 @@ import os
 import subprocess
 import distro
 import requests
+import json
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu, main
@@ -50,6 +51,39 @@ def banner():
 	print(colored("                        Developed by: SkryptLabs                              ", "blue"))
 	print(colored("                         twitter.com/skryptlabs             				   ", "red"))
 	print("                                                                         ")
+
+
+def setup():
+	print(colored("\n-------Setup---------\n", "magenta"))
+	with open("cardsec/conf.json", "r") as f:
+		conf = json.load(f)
+	print("Is this a relay node?")
+	menu1 = TerminalMenu(["[1] Yes", "[2] No"])
+	menu1_choice = menu1.show()
+
+	if menu1_choice == 0:
+		conf["relay"] = "true"
+		print("What network does the node use?")
+		menu2 = TerminalMenu(["[1] Mainnet", "[2] Testnet"])
+		menu2_choice = menu2.show()
+		if menu2_choice == 0:
+			conf["network"] = "mainnet"
+		elif menu2_choice == 1:
+			conf["network"] = "testnet"
+		with open("/etc/cardsec.conf", "w") as f:
+			json.dump(conf, f)
+		print("\nSetup complete!\n")
+		return 0
+		
+	elif menu1_choice == 1:
+		conf["relay"] = "false"
+		with open("/etc/cardsec.conf", "w") as f:
+			json.dump(conf, f)
+		print("\nSetup complete!\n")
+		return 1
+		
+	
+		
 
 
 def info():
@@ -158,14 +192,17 @@ def quit():
 
 
 def menu():
-	menu_options=["[1] System Info", "[2] System Load", "[3] Port Scanner", "[4] Vulnerability Scanner", "[5] Exit"]
+	menu_options=[
+		"[1] System Info", "[2] System Load", "[3] Port Scanner", 
+		"[4] Vulnerability Scanner", "[5] Setup","[6] Exit"
+		]
 	terminal_menu = TerminalMenu(menu_options, title="Home")
 	return terminal_menu.show()
 
 
 def select(option):
 
-	menu_func = [info, load, scan, nmapscan, quit]
+	menu_func = [info, load, scan, nmapscan, setup, quit]
 
 	print()
 	return menu_func[option]()
@@ -175,6 +212,9 @@ def select(option):
 def main():
 	os.system("clear")
 	banner()
+	if not os.path.exists("/etc/cardsec.conf"):
+		setup()
+
 	while 1:
 		option = menu()
 		os.system("clear")
