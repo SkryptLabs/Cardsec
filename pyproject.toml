@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cardsec"
-version = "0.1.9"
+version = "0.2.0"
 description = "System and Security Assesment Tool for Cardano SPOs."
 authors = [
     "Advait Joglekar <advaitjoglekar@yahoo.in>", 

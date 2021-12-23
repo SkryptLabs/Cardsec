@@ -57,7 +57,7 @@ def banner():
 
 def setup():
 	try:
-		subprocess.check_output(['cardano-node','version']).decode().split()[1]
+		subprocess.check_output(['cardano-node','version']).decode()
 	except:
 		print('Cardano Node not installed.')
 		print('Skipping setup...')
@@ -108,18 +108,18 @@ def system():
 def info():
 	try:
 		node=subprocess.check_output(['cardano-node','version']).decode().split()[1]
-	except: node="Not found."
+	except: node="Not installed."
 
 	print(colored("\n-------System Info---------", "magenta"))
 
 	print("Distro: "+distro.id()+' '+distro.version())
 	print("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
 	print("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
-	print("Cardano-Node: " +node)
+	print("Cardano-Node: " + node)
 	latest = requests.get(
 		"https://api.github.com/repos/input-output-hk/cardano-node/releases/latest"
 		).json()["tag_name"]
-	if latest <= node:
+	if latest <= node and node != "Not installed.":
 		print(colored("Cardano-Node is up to date", "green"))
 	else:
 		print(colored(f"Cardano-Node {latest} update available ", "red"))
@@ -232,7 +232,7 @@ def installer():
 			print(colored("No existing version found...", "yellow"))
 		print(colored("Downloading Cardano-node...", "yellow"))
 		download = subprocess.Popen(
-			"wget https://hydra.iohk.io/job/Cardano/cardano-node/cardano-node-linux/latest-finished/download --output-document latest-node.tar.xf",
+			"sudo wget https://hydra.iohk.io/job/Cardano/cardano-node/cardano-node-linux/latest-finished/download --output-document latest-node.tar.xf",
 			shell = True,
 			cwd = path
 			)
