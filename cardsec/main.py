@@ -2,6 +2,7 @@ import psutil
 import socket
 import os
 import subprocess
+import shutil
 import distro
 import requests
 import json
@@ -92,7 +93,7 @@ def setup():
 		
 
 def system():
-	menu_options = ["[1] System Info", "[2] System Load"]
+	menu_options = ["[1] System Info", "[2] System Load", "[3] Back"]
 	terminal_menu = TerminalMenu(menu_options, title="System")
 	option = terminal_menu.show()
 
@@ -100,6 +101,9 @@ def system():
 		info()
 	elif option == 1:
 		load()
+	elif option == 2:
+		back()
+		return 1
 
 def info():
 	try:
@@ -112,7 +116,9 @@ def info():
 	print("RAM Size: " +str(psutil.virtual_memory()[0]/1024/1024//1024)+' GB')
 	print("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
 	print("Cardano-Node: " +node)
-	latest=requests.get("https://api.github.com/repos/input-output-hk/cardano-node/releases/latest").json()["tag_name"]
+	latest = requests.get(
+		"https://api.github.com/repos/input-output-hk/cardano-node/releases/latest"
+		).json()["tag_name"]
 	if latest <= node:
 		print(colored("Cardano-Node is up to date", "green"))
 	else:
@@ -146,8 +152,8 @@ def nmapscan():
 		print(colored("Nmap version: "+nmap_v, "green"))
 	except:
 		#run_cmd("sudo apt-get install nmap -y")
-		print(colored("nmap not installed.", "red"))
-		print('You will need nmap to use this feature.\n')
+		print(colored("Nmap not installed.", "red"))
+		print('You will need Nmap to use this feature.\n')
 		return 1
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
 	if not os.path.exists("vulners.nse"):
@@ -203,10 +209,49 @@ def scan():
 			scanner(port_range)
 
 		elif suboption == 2:
-			os.system("clear")
-			banner()
-			break		
+			back()
+			return 1		
 		
+
+def installer():
+	print(colored('Experimental Feature',"red"))
+	print("Use with with caution.\n")
+	menu_options = ["[1] Cardano-node", "[2] Back"]
+	print(colored("-------One-Click Installer---------\n", "magenta"))
+	terminal_menu = TerminalMenu(menu_options)
+	option = terminal_menu.show()
+
+	if option == 0:
+		print(colored("Installing Cardano-node...", "yellow"))
+		try:
+			subprocess.check_output(['cardano-node','version']).decode()
+			path = shutil.which("cardano-node")[:-13]
+			run_cmd(f"cd {path}")
+		except:
+			path = "/usr/local/bin"
+			print(colored("No existing version found...", "yellow"))
+		print(colored("Downloading Cardano-node...", "yellow"))
+		download = subprocess.Popen(
+			"wget https://hydra.iohk.io/job/Cardano/cardano-node/cardano-node-linux/latest-finished/download --output-document latest-node.tar.xf",
+			shell = True,
+			cwd = path
+			)
+		download.wait()
+		unzip = subprocess.Popen(
+			"sudo tar -xf latest-node.tar.xf && sudo rm latest-node.tar.xf",
+			shell = True,
+			cwd = path
+			)
+		unzip.wait()
+		print(colored("Cardano-node is now installed\n", "yellow"))
+		run_cmd("cardano-node version")
+	elif option == 1:
+		back()
+		return 1
+
+def back():
+	os.system("clear")
+	banner()
 
 def quit():
 	os.system("clear")
@@ -217,7 +262,7 @@ def quit():
 def menu():
 	menu_options=[
 		"[1] System", "[2] Port Scanner", "[3] Vulnerability Scanner", 
-		"[4] Setup","[5] Exit"
+		"[4] One-Click Installer", "[5] Setup", "[6] Exit"
 		]
 	terminal_menu = TerminalMenu(menu_options, title="Home")
 	return terminal_menu.show()
@@ -225,7 +270,7 @@ def menu():
 
 def select(option):
 
-	menu_func = [system, scan, nmapscan, setup, quit]
+	menu_func = [system, scan, nmapscan, installer, setup, quit]
 
 	print()
 	return menu_func[option]()
