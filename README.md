@@ -1,5 +1,6 @@
 <h1>Cardsec</h1>
 <h3>Security Assessment Tool for Cardano SPOs</h3>
+<h5>Funded by Project Catalyst!</h5>
 <br>
 <p>
   <h3> Prerequisites </h3>
