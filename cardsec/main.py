@@ -5,6 +5,7 @@ import subprocess
 import distro
 import requests
 import json
+import time
 from termcolor import colored
 from cardsec.port_scanner import scan_ports
 from simple_term_menu import TerminalMenu, main
@@ -18,7 +19,7 @@ try:
 	from importlib.metadata import version 
 	VERSION = version('cardsec')
 except: 
-	VERSION = "Not found."
+	VERSION = False
 
 
 def num_colour(num:int):
@@ -42,10 +43,10 @@ def banner():
 	print(colored("         ██║  ██╗██╔══██║██╔══██╗██║  ██║ ╚═══██╗██╔══╝  ██║  ██╗        ", "white"))
 	print(colored("         ╚█████╔╝██║  ██║██║  ██║██████╔╝██████╔╝███████╗╚█████╔╝        ", "white"))
 	print(colored("          ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚════╝        ", "white"))
-	if LATEST != VERSION:
+	if VERSION and LATEST >= VERSION:
 		print(colored(f"                               version {VERSION}        ", "yellow"))
 		print(colored(f"     		        New update {LATEST} available", "red"))
-	else:
+	elif VERSION:
 		print(colored(f"                               version {VERSION}        ", "green"))
 	print("                                                                      ")
 	print(colored("                        Developed by: SkryptLabs                              ", "blue"))
@@ -54,6 +55,13 @@ def banner():
 
 
 def setup():
+	try:
+		subprocess.check_output(['cardano-node','version']).decode().split()[1]
+	except:
+		print('Cardano Node not installed.')
+		print('Skipping setup...')
+		return 1
+	
 	print(colored("\n-------Setup---------\n", "magenta"))
 	print("Is this a relay node?")
 	menu1 = TerminalMenu(["[1] Yes", "[2] No"])
@@ -68,21 +76,30 @@ def setup():
 			conf["network"] = "mainnet"
 		elif menu2_choice == 1:
 			conf["network"] = "testnet"
-		with open("/etc/cardsec.conf", "w") as f:
+		with open("/tmp/cardsec.conf", "w") as f:
 			json.dump(conf, f)
+		run_cmd('sudo cp /tmp/cardsec.conf /etc/cardsec.conf')
 		print("\nSetup complete!\n")
 		return 0
 		
 	elif menu1_choice == 1:
 		conf["relay"] = "false"
-		with open("/etc/cardsec.conf", "w") as f:
+		with open("/tmp/cardsec.conf", "w") as f:
 			json.dump(conf, f)
+		run_cmd('sudo cp /tmp/cardsec.conf /etc/cardsec.conf')
 		print("\nSetup complete!\n")
 		return 1
 		
-	
-		
 
+def system():
+	menu_options = ["[1] System Info", "[2] System Load"]
+	terminal_menu = TerminalMenu(menu_options, title="System")
+	option = terminal_menu.show()
+
+	if option == 0:
+		info()
+	elif option == 1:
+		load()
 
 def info():
 	try:
@@ -96,7 +113,7 @@ def info():
 	print("Disk Size: " +str(psutil.disk_usage('/')[0]/1024/1024//1024)+'GB'+'\n')
 	print("Cardano-Node: " +node)
 	latest=requests.get("https://api.github.com/repos/input-output-hk/cardano-node/releases/latest").json()["tag_name"]
-	if latest == node:
+	if latest <= node:
 		print(colored("Cardano-Node is up to date", "green"))
 	else:
 		print(colored(f"Cardano-Node {latest} update available ", "red"))
@@ -126,7 +143,7 @@ def nmapscan():
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
 	run_cmd("sudo apt-get install nmap -y")
 	if not os.path.exists("vulners.nse"):
-		run_cmd("wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse > /dev/null 2>&1")
+		run_cmd("sudo wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse > /dev/null 2>&1")
 		run_cmd("sudo cp vulners.nse /usr/share/nmap/scripts/")
 		print("Installed Succesfully")
 	print(colored("Scanning in process, please have patience.", "yellow"))
@@ -191,8 +208,8 @@ def quit():
 
 def menu():
 	menu_options=[
-		"[1] System Info", "[2] System Load", "[3] Port Scanner", 
-		"[4] Vulnerability Scanner", "[5] Setup","[6] Exit"
+		"[1] System", "[2] Port Scanner", "[3] Vulnerability Scanner", 
+		"[4] Setup","[5] Exit"
 		]
 	terminal_menu = TerminalMenu(menu_options, title="Home")
 	return terminal_menu.show()
@@ -200,7 +217,7 @@ def menu():
 
 def select(option):
 
-	menu_func = [info, load, scan, nmapscan, setup, quit]
+	menu_func = [system, scan, nmapscan, setup, quit]
 
 	print()
 	return menu_func[option]()
@@ -212,6 +229,9 @@ def main():
 	banner()
 	if not os.path.exists("/etc/cardsec.conf"):
 		setup()
+		time.sleep(2)
+		os.system("clear")
+		banner()
 
 	while 1:
 		option = menu()
