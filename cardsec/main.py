@@ -140,8 +140,16 @@ def nmapscan():
 	
 	target = socket.gethostname()
 	t_IP = socket.gethostbyname(target)
+	
+	try:
+		nmap_v = subprocess.check_output(['nmap','--version']).decode().split()[2]
+		print(colored("Nmap version: "+nmap_v, "green"))
+	except:
+		#run_cmd("sudo apt-get install nmap -y")
+		print(colored("nmap not installed.", "red"))
+		print('You will need nmap to use this feature.\n')
+		return 1
 	print(colored("Installing vulnerability scanning scripts....", "yellow"))
-	run_cmd("sudo apt-get install nmap -y")
 	if not os.path.exists("vulners.nse"):
 		run_cmd("sudo wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse > /dev/null 2>&1")
 		run_cmd("sudo cp vulners.nse /usr/share/nmap/scripts/")
