@@ -35,6 +35,9 @@ def num_colour(num:int):
 def run_cmd(cmd):
 	return subprocess.run(cmd, shell= True, text = True, stdout= subprocess.PIPE)
 
+def node_ver():
+	return subprocess.check_output(['cardano-node','version']).decode().split()[1]
+
 def banner():
 	print("                                                                      ")
 	print("                                                                      ")
@@ -44,7 +47,7 @@ def banner():
 	print(colored("         ██║  ██╗██╔══██║██╔══██╗██║  ██║ ╚═══██╗██╔══╝  ██║  ██╗        ", "white"))
 	print(colored("         ╚█████╔╝██║  ██║██║  ██║██████╔╝██████╔╝███████╗╚█████╔╝        ", "white"))
 	print(colored("          ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚════╝        ", "white"))
-	if VERSION and LATEST >= VERSION:
+	if VERSION and LATEST > VERSION:
 		print(colored(f"                               version {VERSION}        ", "yellow"))
 		print(colored(f"     		        New update {LATEST} available", "red"))
 	elif VERSION:
@@ -57,7 +60,7 @@ def banner():
 
 def setup():
 	try:
-		subprocess.check_output(['cardano-node','version']).decode()
+		node_ver()
 	except:
 		print('Cardano Node not installed.')
 		print('Skipping setup...')
@@ -90,7 +93,7 @@ def setup():
 		run_cmd('sudo cp /tmp/cardsec.conf /etc/cardsec.conf')
 		print("\nSetup complete!\n")
 		return 1
-		
+	
 
 def system():
 	menu_options = ["[1] System Info", "[2] System Load", "[3] Back"]
@@ -107,8 +110,8 @@ def system():
 
 def info():
 	try:
-		node=subprocess.check_output(['cardano-node','version']).decode().split()[1]
-	except: node="Not installed."
+		node = node_ver()
+	except: node="Not installed"
 
 	print(colored("\n-------System Info---------", "magenta"))
 
@@ -119,7 +122,7 @@ def info():
 	latest = requests.get(
 		"https://api.github.com/repos/input-output-hk/cardano-node/releases/latest"
 		).json()["tag_name"]
-	if latest <= node and node != "Not installed.":
+	if node != "Not installed" and latest <= node:
 		print(colored("Cardano-Node is up to date", "green"))
 	else:
 		print(colored(f"Cardano-Node {latest} update available ", "red"))
@@ -244,7 +247,8 @@ def installer():
 			)
 		unzip.wait()
 		print(colored("Cardano-node is now installed\n", "yellow"))
-		run_cmd("cardano-node version")
+		node = node_ver()
+		print(colored("Cardano-node version: "+ node, "green"))
 	elif option == 1:
 		back()
 		return 1
