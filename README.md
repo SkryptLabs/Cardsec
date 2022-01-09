@@ -7,9 +7,9 @@
   <ul>
     <li> Linux System
     <li> Python 3.6 or above
-    <li> Nmap ```sudo apt-get install nmap ```
-    <li> bwm-ng  ```sudo apt-get install bwm-ng ```
-  </ul>
+    <li> Nmap 
+    <li> bwm-ng
+   </ul>  
 </p>
 <br>
 <p>
