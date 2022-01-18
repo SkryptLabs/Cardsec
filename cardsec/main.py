@@ -214,7 +214,21 @@ def scan():
 		elif suboption == 2:
 			back()
 			return 1		
-		
+
+
+def ddos():
+	print(colored("Setting up network bandwith monitoring...", "yellow"))
+	print(colored("Press 'q' to enter/exit monitoring", "yellow"))
+	print()
+	print(colored("Hint: If you see your server's bandwidth spiking abnormally in then you might be experiencing a ddos attack.", "red"))
+	try:
+		subprocess.check_output("bwm-ng")
+	except:
+		#run_cmd("sudo apt-get install bwm-ng -y")
+		print(colored("bwm-ng not installed.", "red"))
+		print('You will need bwm-ng to use this feature.\n')	
+	os.system("bwm-ng")
+	
 
 def installer():
 	print(colored('Experimental Feature',"red"))
@@ -263,10 +277,11 @@ def quit():
 	exit()
 
 
+
 def menu():
 	menu_options=[
-		"[1] System", "[2] Port Scanner", "[3] Vulnerability Scanner", 
-		"[4] One-Click Installer", "[5] Setup", "[6] Exit"
+		"[1] System", "[2] Port Scanner", "[3] Vulnerability Scanner", "[4] Network Monitor",
+		"[5] One-Click Installer", "[6] Setup", "[7] Exit"
 		]
 	terminal_menu = TerminalMenu(menu_options, title="Home")
 	return terminal_menu.show()
@@ -274,7 +289,7 @@ def menu():
 
 def select(option):
 
-	menu_func = [system, scan, nmapscan, installer, setup, quit]
+	menu_func = [system, scan, nmapscan, ddos, installer, setup, quit]
 
 	print()
 	return menu_func[option]()

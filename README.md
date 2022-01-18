@@ -1,13 +1,16 @@
 <h1>Cardsec</h1>
 <h3>Security Assessment Tool for Cardano SPOs</h3>
 <h5>Funded by Project Catalyst! Thanks to Cardano Community</h5>
+<h5>https://skryptlabs.gitbook.io/cardsec/<h5>
 <br>
 <p>
   <h3> Prerequisites </h3>
   <ul>
     <li> Linux System
     <li> Python 3.6 or above
-  </ul>
+    <li> Nmap 
+    <li> bwm-ng
+   </ul>  
 </p>
 <br>
 <p>
